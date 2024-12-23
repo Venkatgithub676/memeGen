@@ -8,6 +8,11 @@ import {
   GenerateBtn,
   SelectOptions,
   Options,
+  Text,
+  NewImage,
+  NewImage1,
+  BigMeme,
+  OuterForm,
 } from './styledComponents'
 
 const fontSizesOptionsList = [
@@ -43,25 +48,95 @@ const fontSizesOptionsList = [
 // Write your code here
 
 class MemeGenerator extends Component {
-  state = {}
+  state = {
+    url: '',
+    topText: '',
+    bottomText: '',
+    size: '',
+    generated: false,
+    imgObj: {url: '', topText: '', bottomText: '', size: ''},
+  }
+
+  onChangeImg = event => {
+    this.setState({url: event.target.value})
+  }
+
+  onChangeTop = event => {
+    this.setState({topText: event.target.value})
+  }
+
+  onChangeBottom = event => {
+    this.setState({bottomText: event.target.value})
+  }
+
+  onChangeSelect = event => {
+    this.setState({size: event.target.value})
+  }
+
+  onSubmitBtn = event => {
+    event.preventDefault()
+    const {size, topText, bottomText, url} = this.state
+    this.setState({imgObj: {size, bottomText, topText, url}, generated: true})
+  }
 
   render() {
+    const {url, topText, bottomText, size, generated, imgObj} = this.state
+    console.log(generated)
     return (
       <MemeCon>
-        <GeneratorHeading>Meme Generator</GeneratorHeading>
-        <FormCon type="submit" onClick={this.onSubmitBtn}>
-          <InputHeading htmlFor="url">Image URL</InputHeading>
-          <Input id="url" />
-          <InputHeading htmlFor="top-text">Top Text</InputHeading>
-          <Input id="top-text" />
-          <InputHeading htmlFor="bottom-text">Bottom Text</InputHeading>
-          <Input id="bottom-text" />
-          <InputHeading htmlFor="font-size">Font Size</InputHeading>
-          <SelectOptions id="font-size">
-            <Options>Hi</Options>
-          </SelectOptions>
-          <GenerateBtn>Generate</GenerateBtn>
-        </FormCon>
+        {generated && (
+          <NewImage url={imgObj.url} data-testid="meme">
+            <Text size={imgObj.size}>{imgObj.topText}</Text>
+            <Text size={imgObj.size}>{imgObj.bottomText}</Text>
+          </NewImage>
+        )}
+        <BigMeme>
+          <OuterForm>
+            <GeneratorHeading>Meme Generator</GeneratorHeading>
+            <FormCon onSubmit={this.onSubmitBtn}>
+              <InputHeading htmlFor="url">Image URL</InputHeading>
+              <Input
+                id="url"
+                placeholder="Enter the Image URL"
+                onChange={this.onChangeImg}
+                value={url}
+              />
+              <InputHeading htmlFor="top-text">Top Text</InputHeading>
+              <Input
+                id="top-text"
+                placeholder="Enter the Top Text"
+                onChange={this.onChangeTop}
+                value={topText}
+              />
+              <InputHeading htmlFor="bottom-text">Bottom Text</InputHeading>
+              <Input
+                id="bottom-text"
+                onChange={this.onChangeBottom}
+                placeholder="Enter the Bottom Text"
+                value={bottomText}
+              />
+              <InputHeading htmlFor="font-size">Font Size</InputHeading>
+              <SelectOptions
+                value={size}
+                id="font-size"
+                onChange={this.onChangeSelect}
+              >
+                {fontSizesOptionsList.map(each => (
+                  <Options key={each.optionId} value={each.displayText}>
+                    {each.displayText}
+                  </Options>
+                ))}
+              </SelectOptions>
+              <GenerateBtn type="submit">Generate</GenerateBtn>
+            </FormCon>
+          </OuterForm>
+          {generated && (
+            <NewImage1 url={imgObj.url} data-testid="meme">
+              <Text size={imgObj.size}>{imgObj.topText}</Text>
+              <Text size={imgObj.size}>{imgObj.bottomText}</Text>
+            </NewImage1>
+          )}
+        </BigMeme>
       </MemeCon>
     )
   }
